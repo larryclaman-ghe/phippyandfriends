@@ -10,7 +10,7 @@ steps:
    az login \
         --service-principal \
         -u $(aksSpId) \
-        -p $(aksSpSecret) \
+        -p '$(aksSpSecret)' \
         --tenant $(aksSpTenantId)
     az aks get-credentials \
         -n $(aks) \
@@ -19,10 +19,11 @@ steps:
         $(registryName) \
         https://$(registryServerName)/helm/v1/repo \
         --username $(registryLogin) \
-        --password $(registryPassword)
+        --password '$(registryPassword)'
     helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/ci-pipeline/build-artifact/variables.json -r)
     helm upgrade \
         --namespace $(k8sNamespace) \
+        --create-namespace \
         --install \
         --wait \
         --version $helmChartVersion \
